@@ -188,8 +188,9 @@ func main() {
 	var personalAccessToken string
 	var httpBind string
 	flag.StringVar(&user, "user", os.Getenv("FEED_USER"), "The username to fetch the feed for")
-	flag.StringVar(&personalAccessToken, "accessToken", os.Getenv("FEED_TOKEN"), "Your personal access token for github")
+	flag.StringVar(&personalAccessToken, "access-token", os.Getenv("FEED_TOKEN"), "Your personal access token for github")
 	flag.StringVar(&httpBind, "http", os.Getenv("FEED_HTTP"), "The address to bind the server to")
+	flag.Parse()
 
 	if user == "" {
 		log.Fatal("user or FEED_USER must be specified")
