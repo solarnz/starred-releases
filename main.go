@@ -4,7 +4,6 @@ import (
 	"encoding/xml"
 	"flag"
 	"fmt"
-	"html"
 	"log"
 	"net/http"
 	"os"
@@ -14,6 +13,8 @@ import (
 	"time"
 
 	"github.com/google/go-github/github"
+	"github.com/microcosm-cc/bluemonday"
+	md "github.com/shurcooL/github_flavored_markdown"
 	"golang.org/x/oauth2"
 	"golang.org/x/tools/blog/atom"
 )
@@ -35,6 +36,18 @@ func (r Release) Releaser() string {
 		return *r.Assets[0].Uploader.Login
 	}
 	return r.owner
+}
+
+func (r Release) SanitisedBody() string {
+	var i string
+	if r.Body == nil {
+		i = ""
+	} else {
+		i = *r.Body
+	}
+	s := bluemonday.UGCPolicy()
+	b := md.Markdown([]byte(i))
+	return string(s.SanitizeBytes(b))
 }
 
 type ByDate []Release
@@ -168,7 +181,7 @@ func (c starredClient) BuildFeed(feedID, user string) ([]byte, error) {
 			}},
 			Content: &atom.Text{
 				Type: "html",
-				Body: fmt.Sprintf("<pre>%s</pre>", html.EscapeString(*release.Body)),
+				Body: release.SanitisedBody(),
 			},
 		})
 	}
