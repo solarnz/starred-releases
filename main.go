@@ -30,6 +30,13 @@ type Release struct {
 	github.RepositoryRelease
 }
 
+func (r Release) Releaser() string {
+	if len(r.Assets) > 1 {
+		return *r.Assets[0].Uploader.Login
+	}
+	return r.owner
+}
+
 type ByDate []Release
 
 func (d ByDate) Len() int      { return len(d) }
@@ -153,7 +160,7 @@ func (c starredClient) BuildFeed(feedID, user string) ([]byte, error) {
 			Updated:   atom.Time(release.PublishedAt.Time),
 			Published: atom.Time(release.PublishedAt.Time),
 			Author: &atom.Person{
-				Name: release.owner,
+				Name: release.Releaser(),
 			},
 			Link: []atom.Link{{
 				Rel:  "alternate",
