@@ -1,4 +1,4 @@
-# starred-repositories
+# starred-releases
 
 A simple go server that will fetch your starred repositories, fetch the
 releases for those repositories and generate an atom feed of those releases.
@@ -13,9 +13,14 @@ section and clicking on "Generate new token"
 
 ### Docker
 
-    docker build . -t starred-repositories
-    docker run -e FEED_USER=YOURUSERNAME -e FEED_TOKEN=PERSONALACCESSTOKEN starred-repositories
+    docker build . -t starred-releases
+    docker run -e FEED_USER=YOURUSERNAME -e FEED_TOKEN=PERSONALACCESSTOKEN starred-releases
 
 ### Locally
 
-    go get github.com/solarnz/starred-repositories
+    go get github.com/solarnz/starred-releases
+    starred-releases -user YOURUSERNAME -access-token ACCESSTOKEN
+
+## Usage
+
+You can then access the atom feed on http://localhost:8080/feed
