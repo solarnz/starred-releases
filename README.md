@@ -23,4 +23,4 @@ section and clicking on "Generate new token"
 
 ## Usage
 
-You can then access the atom feed on http://localhost:8080/<github username>/<personal access token>/atom.xml
+You can then access the atom feed at `http://localhost:8080/<github username>/<personal access token>/atom.xml`
