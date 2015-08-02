@@ -24,3 +24,5 @@ section and clicking on "Generate new token"
 ## Usage
 
 You can then access the atom feed at `http://localhost:8080/<github username>/<personal access token>/atom.xml`
+
+Alternatively, you can use the public instance. Generate your feed by going to http://feedr.sloo.co/generate
