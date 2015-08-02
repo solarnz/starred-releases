@@ -14,13 +14,13 @@ section and clicking on "Generate new token"
 ### Docker
 
     docker build . -t starred-releases
-    docker run -e FEED_USER=YOURUSERNAME -e FEED_TOKEN=PERSONALACCESSTOKEN -p "8080:80" starred-releases
+    docker run -p "8080:80" starred-releases
 
 ### Locally
 
     go get github.com/solarnz/starred-releases
-    starred-releases -user YOURUSERNAME -access-token ACCESSTOKEN
+    starred-releases
 
 ## Usage
 
-You can then access the atom feed on http://localhost:8080/feed
+You can then access the atom feed on http://localhost:8080/<github username>/<personal access token>/atom.xml
