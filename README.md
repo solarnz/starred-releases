@@ -14,7 +14,7 @@ section and clicking on "Generate new token"
 ### Docker
 
     docker build . -t starred-releases
-    docker run -e FEED_USER=YOURUSERNAME -e FEED_TOKEN=PERSONALACCESSTOKEN starred-releases
+    docker run -e FEED_USER=YOURUSERNAME -e FEED_TOKEN=PERSONALACCESSTOKEN -p "8080:80" starred-releases
 
 ### Locally
 
