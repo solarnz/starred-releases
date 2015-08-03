@@ -46,6 +46,12 @@ func (r Release) SanitisedBody() string {
 	return string(s.SanitizeBytes(b))
 }
 
+func (r Release) Title() string {
+	return fmt.Sprintf(
+		"[%s/%s] %s (%s)", r.owner, r.repository, *r.Name, *r.TagName,
+	)
+}
+
 type ByDate []Release
 
 func (d ByDate) Len() int      { return len(d) }
@@ -161,10 +167,7 @@ func (c Feed) BuildFeed(feedID, user string) ([]byte, error) {
 	var entries []*atom.Entry
 	for _, release := range releases {
 		entries = append(entries, &atom.Entry{
-			Title: fmt.Sprintf(
-				"[%s/%s] %s (%s)",
-				release.owner, release.repository, *release.Name, *release.TagName,
-			),
+			Title:     release.Title(),
 			ID:        feedID + "/" + strconv.Itoa(*release.ID),
 			Updated:   atom.Time(release.PublishedAt.Time),
 			Published: atom.Time(release.PublishedAt.Time),
