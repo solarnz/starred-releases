@@ -60,7 +60,7 @@ func (d ByDate) Less(i, j int) bool {
 	return d[i].PublishedAt.Sub(d[j].PublishedAt.Time).Seconds() < 0
 }
 
-func (c Feed) GetStarredRepositories(user string) ([]github.StarredRepository, error) {
+func (c Feed) StarredRepositories(user string) ([]github.StarredRepository, error) {
 	var repos []github.StarredRepository
 
 	p := 0
@@ -90,7 +90,7 @@ func (c Feed) GetStarredRepositories(user string) ([]github.StarredRepository, e
 	return repos, nil
 }
 
-func (c Feed) GetRepositoryReleases(user, repo string) ([]github.RepositoryRelease, error) {
+func (c Feed) RepositoryReleases(user, repo string) ([]github.RepositoryRelease, error) {
 	var releases []github.RepositoryRelease
 
 	p := 0
@@ -119,12 +119,7 @@ func (c Feed) GetRepositoryReleases(user, repo string) ([]github.RepositoryRelea
 	return releases, nil
 }
 
-func (c Feed) BuildFeed(feedID, user string) ([]byte, error) {
-	repos, err := c.GetStarredRepositories(user)
-	if err != nil {
-		return nil, err
-	}
-
+func (c Feed) Releases(repos []github.StarredRepository) ([]Release, error) {
 	var releases []Release
 	var errors []error
 	releasesLock := sync.Mutex{}
@@ -135,7 +130,7 @@ func (c Feed) BuildFeed(feedID, user string) ([]byte, error) {
 		go func(repo github.StarredRepository) {
 			owner := *(repo.Repository.Owner.Login)
 			name := *(repo.Repository.Name)
-			repositoryReleases, err := c.GetRepositoryReleases(owner, name)
+			repositoryReleases, err := c.RepositoryReleases(owner, name)
 			if err != nil {
 				errorsLock.Lock()
 				errors = append(errors, err)
@@ -160,6 +155,18 @@ func (c Feed) BuildFeed(feedID, user string) ([]byte, error) {
 	wg.Wait()
 	if len(errors) != 0 {
 		return nil, fmt.Errorf("encountered the following errors: %s", errors)
+	}
+	return releases, nil
+}
+
+func (c Feed) BuildFeed(feedID, user string) ([]byte, error) {
+	repos, err := c.StarredRepositories(user)
+	if err != nil {
+		return nil, err
+	}
+	releases, err := c.Releases(repos)
+	if err != nil {
+		return nil, err
 	}
 
 	sort.Sort(sort.Reverse(ByDate(releases)))
